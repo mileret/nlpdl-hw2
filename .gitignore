@@ -1,0 +1,13 @@
+*.bin
+*.model
+*.vocab
+*.json
+*pycache*
+*.optim
+*.txt
+*.chr
+*.en
+*.pkl
+nmt/runs/
+*checkpoints/
+*runs/
