@@ -11,3 +11,4 @@
 nmt/runs/
 *checkpoints/
 *runs/
+*.conll
