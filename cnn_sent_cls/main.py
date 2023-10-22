@@ -52,7 +52,7 @@ def train(args):
         dev_sentence_idx.append(sent_idx)
     
     dev_dataset = MyDataset(dev_sentence_idx, dev_label)
-    dev_dataloader = DataLoader(dev_dataset, batch_size=args.batch_size, shuffle=True, collate_fn=collate_fn)
+    dev_dataloader = DataLoader(dev_dataset, batch_size=1, shuffle=True, collate_fn=collate_fn)
 
     # build model
     model = CNN(vocab_size=len(vocab), n_filters=args.n_filters, embedding_dim=args.embedding_dim, filter_sizes=args.filter_sizes, output_dim=args.output_dim, dropout=args.dropout)
@@ -60,7 +60,7 @@ def train(args):
     # optimizer
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
-    
+    val_loss = []
     # tensorboard
     log_dir = os.path.join(os.path.dirname(__file__), 'runs')
     os.makedirs(log_dir, exist_ok=True)
@@ -82,14 +82,24 @@ def train(args):
 
         # validation
         model.eval()
+        total_loss = 0
         for i, (sents, labels) in tqdm(enumerate(dev_dataloader), desc=f'Validation Epoch {epoch}'):
             pred = model(sents)
             loss = model.cls_loss(pred, labels)
             acc = model.cls_acc(pred, labels)
+            total_loss += loss.item()
             print('Epoch: {}, Iter: {}, Loss: {:.4f}, Acc: {:.4f}'.format(epoch, i, loss.item(), acc.item()))
             writer.add_scalar('val_loss', loss.item(), epoch * len(dev_dataloader) + i)
             writer.add_scalar('val_acc', acc.item(), epoch * len(dev_dataloader) + i)
+        total_loss /= len(dev_dataloader)
+        val_loss.append(total_loss)
         
+        # apply early stopping, if the validation loss is not decreasing for 5 epochs, stop training
+        if len(val_loss) > 5 and val_loss[-1] > val_loss[-2] > val_loss[-3] > val_loss[-4] > val_loss[-5]:
+            print('Early Stopping')
+            print('Best Epoch: {}'.format(epoch - 5))
+            break
+
         # save checkpoints
         save_dir = os.path.join(os.path.dirname(__file__), 'checkpoints')
         os.makedirs(save_dir, exist_ok=True)
