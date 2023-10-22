@@ -150,14 +150,24 @@ def test(args):
         print('Iter: {}, Loss: {:.4f}, Acc: {:.4f}'.format(i, loss.item(), acc.item()))
     print('Test Acc: {:.4f}'.format(total_acc / len(test_dataloader)))
 
+def seed_everything(seed):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    # torch.backends.cudnn.deterministic = True
+    # torch.backends.cudnn.benchmark = False
+    # np.random.seed(seed)
+    # random.seed(seed)
+
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
     # train args
+    parser.add_argument('--seed', type=int, default=510)
     parser.add_argument('-t', '--train', action='store_true')
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--batch_size', type=int, default=32)
-    parser.add_argument('--epochs', type=int, default=30)
+    parser.add_argument('--epochs', type=int, default=50)
     parser.add_argument('--dropout', type=float, default=0.5)
     parser.add_argument('--embedding_dim', type=int, default=300)
     parser.add_argument('--n_filters', type=int, default=100)
@@ -168,6 +178,8 @@ if __name__ == '__main__':
     parser.add_argument('--load_path', type=str, default='epoch_29.pth')
     args = parser.parse_args()
     
+    seed_everything(args.seed)
+
     if args.train:
         train(args)
     else:
