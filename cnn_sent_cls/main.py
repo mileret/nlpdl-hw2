@@ -76,7 +76,7 @@ def train(args):
             acc = model.cls_acc(pred, labels)
             loss.backward()
             optimizer.step()
-            print('Epoch: {}, Iter: {}, Loss: {:.4f}, Acc: {:.4f}'.format(epoch, i, loss.item(), acc.item()))
+            # print('Epoch: {}, Iter: {}, Loss: {:.4f}, Acc: {:.4f}'.format(epoch, i, loss.item(), acc.item()))
             writer.add_scalar('train_loss', loss.item(), epoch * len(train_dataloader) + i)
             writer.add_scalar('train_acc', acc.item(), epoch * len(train_dataloader) + i)
 
@@ -88,16 +88,16 @@ def train(args):
             loss = model.cls_loss(pred, labels)
             acc = model.cls_acc(pred, labels)
             total_loss += loss.item()
-            print('Epoch: {}, Iter: {}, Loss: {:.4f}, Acc: {:.4f}'.format(epoch, i, loss.item(), acc.item()))
+            # print('Epoch: {}, Iter: {}, Loss: {:.4f}, Acc: {:.4f}'.format(epoch, i, loss.item(), acc.item()))
             writer.add_scalar('val_loss', loss.item(), epoch * len(dev_dataloader) + i)
             writer.add_scalar('val_acc', acc.item(), epoch * len(dev_dataloader) + i)
         total_loss /= len(dev_dataloader)
         val_loss.append(total_loss)
         
-        # apply early stopping, if the validation loss is not decreasing for 5 epochs, stop training
-        if len(val_loss) > 5 and val_loss[-1] > val_loss[-2] > val_loss[-3] > val_loss[-4] > val_loss[-5]:
+        # apply early stopping, if the validation loss is not decreasing for 4 epochs, stop training
+        if len(val_loss) > 10 and val_loss[-1] > val_loss[-2] > val_loss[-3] > val_loss[-4]:
             print('Early Stopping')
-            print('Best Epoch: {}'.format(epoch - 5))
+            print('Best Epoch: {}'.format(epoch - 4))
             break
 
         # save checkpoints
@@ -175,7 +175,7 @@ if __name__ == '__main__':
     parser.add_argument('--output_dim', type=int, default=4)
 
     # test args
-    parser.add_argument('--load_path', type=str, default='epoch_29.pth')
+    parser.add_argument('--load_path', type=str, default='epoch_17.pth')
     args = parser.parse_args()
     
     seed_everything(args.seed)
