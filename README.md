@@ -15,7 +15,7 @@ You can install PyTorch by following the instructions provided on the [PyTorch w
 
 For Task 2, you need to place the train.txt, test.txt, and dev.txt files under the `cnn_sent_cls/` directory.
 
-To preprocess the dataset and build the vocabulary using Jieba, you can run the following command:
+To preprocess the dataset and build the vocabulary using [Jieba](https://pypi.org/project/jieba/), you can run the following command:
 
 ```
 python cnn_sent_cls/build_vocab.py
