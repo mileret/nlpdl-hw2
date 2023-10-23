@@ -3,9 +3,12 @@ code implementation of nlpdl hw2 2023
 
 # Installation
 
-```conda install --yes --file requirements.txt```
+```
+conda install --yes --file requirements.txt
+```
 
 It's recommended to install python=3.8 and torch=2.0.1.
+
 You can install PyTorch by following the instructions provided on the PyTorch website (https://pytorch.org/get-started/locally/).
 
 # Task2
